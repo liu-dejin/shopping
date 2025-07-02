@@ -4,6 +4,28 @@ import request from '@/utils/requset'
 export const getPicCode = () => {
   // 必须加上return 把promise对象返回
   return request({
-    url: 'http://smart-shop.itheima.net/index.php?s=/api/captcha/image'
+    url: '/captcha/image'
+  })
+}
+// 获取短信验证码
+export const getMessage = (captchaCode, captchaKey, mobile) => {
+  return request({
+    url: '/captcha/sendSmsCaptcha',
+    method: 'POST',
+    data: {
+      captchaCode, captchaKey, mobile
+    }
+  })
+}
+
+// 3.登录接口
+export const codeLogin = (mobile, smsCode) => {
+  return request.post('/passport/login', {
+    form: {
+      isParty: false,
+      partyData: {},
+      mobile,
+      smsCode
+    }
   })
 }
