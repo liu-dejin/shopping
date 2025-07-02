@@ -1,5 +1,6 @@
-// 按需导入 改babel要重启
+// 按需导入
 import Vue from 'vue'
-import { Button, Switch } from 'vant'
-Vue.use(Button)
-Vue.use(Switch)
+import { Tabbar, TabbarItem } from 'vant'
+
+Vue.use(Tabbar)
+Vue.use(TabbarItem)
