@@ -28,6 +28,7 @@
 
 <script>
 import { getPicCode } from '@/api/login'
+// import { Toast } from 'vant'
 export default {
   name: 'LoginPage',
   data () {
@@ -44,7 +45,8 @@ export default {
     async getPicCode () {
       const { data: { base64, key } } = await getPicCode()
       this.picUrl = base64 // 存储地址
-      this.picCode = key
+      this.picCode = key // 唯一key
+      this.$toast('获取图形验证码成功')
     }
   }
 }

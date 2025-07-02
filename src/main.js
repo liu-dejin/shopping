@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import '@/utils/vant-ui'
 import '@/style/common.less'
+// import { Toast } from 'vant'
+// Toast('你好啊')
 /* 全部导入vant
 import Vant from 'vant'
 import 'vant/lib/index.css'
