@@ -49,6 +49,7 @@ export default {
     this.getPicCode()
   },
   methods: {
+    // 获取图片验证码
     async getPicCode () {
       const { data: { base64, key } } = await getPicCode()
       this.picUrl = base64 // 存储地址
@@ -76,6 +77,7 @@ export default {
       }
       // 当前没有定时器开启 且当前秒数=总秒数(归位)才开启定时器
       if (!this.timer && this.second === this.totalSecond) {
+        // 发送请求 如果响应的status不是200 抛出一个错误的promise错误 await只会等待正确的promise
         await getMessage(this.picCode, this.picKey, this.mobile)
         // console.log(res)
         this.$toast('验证码获取成功,注意查收')
@@ -100,7 +102,7 @@ export default {
         this.$toast('请输入正确的验证码')
       }
       const res = await codeLogin(this.mobile, this.smsCode)
-      console.log(res)
+      this.$store.commit('user/setUserInfo', res.data)
       this.$toast('恭喜登录成功')
       this.$router.push('/')
     }
