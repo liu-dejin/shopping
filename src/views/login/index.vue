@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import request from '@/utils/requset'
+import { getPicCode } from '@/api/login'
 export default {
   name: 'LoginPage',
   data () {
@@ -42,9 +42,7 @@ export default {
   },
   methods: {
     async getPicCode () {
-      const { data: { base64, key } } = await request({
-        url: 'http://smart-shop.itheima.net/index.php?s=/api/captcha/image'
-      })
+      const { data: { base64, key } } = await getPicCode()
       this.picUrl = base64 // 存储地址
       this.picCode = key
     }
