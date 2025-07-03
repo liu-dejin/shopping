@@ -20,7 +20,6 @@
 export default {
   name: 'GoodsItem',
   props: {
-
     item: {
       type: Object,
       // 对象类默认值是一个函数 返回值就是默认值
