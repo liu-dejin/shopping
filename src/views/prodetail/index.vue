@@ -1,6 +1,11 @@
 <template>
   <div class="prodetail">
-    <van-nav-bar fixed title="商品详情页" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar
+      fixed
+      title="商品详情页"
+      left-arrow
+      @click-left="$router.go(-1)"
+    />
 
     <van-swipe :autoplay="3000" @change="onChange">
       <van-swipe-item v-for="(image, index) in images" :key="index">
@@ -8,7 +13,9 @@
       </van-swipe-item>
 
       <template #indicator>
-        <div class="custom-indicator">{{ current + 1 }} / {{ images.length }}</div>
+        <div class="custom-indicator">
+          {{ current + 1 }} / {{ images.length }}
+        </div>
       </template>
     </van-swipe>
 
@@ -16,13 +23,13 @@
     <div class="info">
       <div class="title">
         <div class="price">
-          <span class="now">￥{{detail.goods_price_min}}</span>
-          <span class="oldprice">￥{{detail.goods_price_max}}</span>
+          <span class="now">￥{{ detail.goods_price_min }}</span>
+          <span class="oldprice">￥{{ detail.goods_price_max }}</span>
         </div>
-        <div class="sellcount">已售{{detail.goods_sales}}件</div>
+        <div class="sellcount">已售{{ detail.goods_sales }}件</div>
       </div>
       <div class="msg text-ellipsis-2">
-        {{detail.goods_name}}
+        {{ detail.goods_name }}
       </div>
 
       <div class="service">
@@ -39,76 +46,90 @@
     <!-- 商品评价 -->
     <div class="comment">
       <div class="comment-title">
-        <div class="left">商品评价 ({{total}}条)</div>
-        <div class="right">查看更多 <van-icon name="arrow" /> </div>
+        <div class="left">商品评价 ({{ total }}条)</div>
+        <div class="right">查看更多 <van-icon name="arrow" /></div>
       </div>
       <div class="comment-list">
-        <div class="comment-item" v-for="item in commentList" :key="item.commnet_id">
+        <div
+          class="comment-item"
+          v-for="item in commentList"
+          :key="item.commnet_id"
+        >
           <div class="top">
-            <img :src="item.user.avatar_url || defaultImg" alt="">
-            <div class="name">{{item.user.nike_name}}</div>
-            <van-rate :size="16" :value="item.score/2" color="#ffd21e" void-icon="star" void-color="#eee"/>
+            <img :src="item.user.avatar_url || defaultImg" alt="" />
+            <div class="name">{{ item.user.nike_name }}</div>
+            <van-rate
+              :size="16"
+              :value="item.score / 2"
+              color="#ffd21e"
+              void-icon="star"
+              void-color="#eee"
+            />
           </div>
           <div class="content">
-            {{item.content}}
+            {{ item.content }}
           </div>
           <div class="time">
-            {{item.create_time}}
+            {{ item.create_time }}
           </div>
         </div>
       </div>
     </div>
 
     <!-- 商品描述 -->
-    <div class="desc" v-html="detail.content">
-
-    </div>
+    <div class="desc" v-html="detail.content"></div>
 
     <!-- 底部 -->
-    <div class="footer">
+    <div @click="$router.push('/')" class="footer">
       <div class="icon-home">
         <van-icon name="wap-home-o" />
         <span>首页</span>
       </div>
-      <div class="icon-cart">
+      <div @click="$router.push('/cart')" class="icon-cart">
+        <span v-if="cartTotal > 0" class="num">{{ cartTotal }}</span>
         <van-icon name="shopping-cart-o" />
         <span>购物车</span>
       </div>
-      <div @click="addFn" class="btn-add">加入购物车</div>
-      <div @click="buyFn" class="btn-buy">立刻购买</div>
+      <div @click.stop="addFn" class="btn-add">加入购物车</div>
+      <div @click.stop="buyFn" class="btn-buy">立刻购买</div>
     </div>
-<van-action-sheet v-model="showPannel" :title="mode === 'cart' ? '加入购物车' : '立刻购买'">
-  <div class="product">
-    <div class="product-title">
-      <div class="left">
-        <img :src="detail.goods_img" alt="">
-      </div>
-      <div class="right">
-        <div class="price">
-          <span>¥</span>
-          <span class="nowprice">{{detail.goods_price_min}}</span>
+    <van-action-sheet
+      v-model="showPannel"
+      :title="mode === 'cart' ? '加入购物车' : '立刻购买'"
+    >
+      <div class="product">
+        <div class="product-title">
+          <div class="left">
+            <img :src="detail.goods_image" alt="" />
+          </div>
+          <div class="right">
+            <div class="price">
+              <span>¥</span>
+              <span class="nowprice">{{ detail.goods_price_min }}</span>
+            </div>
+            <div class="count">
+              <span>库存</span>
+              <span>{{ detail.stock_total }}</span>
+            </div>
+          </div>
         </div>
-        <div class="count">
-          <span>库存</span>
-          <span>{{detail.stock_total}}</span>
+        <div class="num-box">
+          <span>数量</span>
+          <!-- :value @input -->
+          <CountBox v-model="addCount"> </CountBox>
         </div>
-      </div>
-    </div>
-    <div class="num-box">
-      <span>数量</span>
-      <!-- :value @input -->
-      <CountBox v-model="addCount"></CountBox>
-    </div>
 
-    <!-- 有库存才显示提交按钮 -->
-    <div class="showbtn" v-if="detail.stock_total>0">
-      <!-- mode加入购物车显示btn -->
-      <div class="btn" v-if="mode==='cart'">加入购物车</div>
-      <div class="btn now" v-else>立刻购买</div>
-    </div>
-    <div class="btn-none" v-else>该商品已抢完</div>
-  </div>
-</van-action-sheet>
+        <!-- 有库存才显示提交按钮 -->
+        <div class="showbtn" v-if="detail.stock_total > 0">
+          <!-- mode加入购物车显示btn -->
+          <div class="btn" v-if="mode === 'cart'" @click="addCart">
+            加入购物车
+          </div>
+          <div class="btn now" v-else>立刻购买</div>
+        </div>
+        <div class="btn-none" v-else>该商品已抢完</div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
@@ -116,6 +137,7 @@
 import { getProDetail, getProComments } from '@/api/product'
 import defaultImg from '@/assets/default-avatar.png'
 import CountBox from '@/components/CountBox.vue'
+import { addCart } from '@/api/cart'
 export default {
   name: 'ProDetail',
   components: {
@@ -131,7 +153,8 @@ export default {
       defaultImg, // 默任头像
       showPannel: false, // 显示隐藏弹层
       mode: 'cart', // 标记弹层
-      addCount: 1 //  数字框绑定的数据
+      addCount: 1, //  数字框绑定的数据
+      cartTotal: 0
     }
   },
   computed: {
@@ -141,7 +164,10 @@ export default {
     }
   },
   created () {
+    // 一进页面就渲染
+    // 渲染商品
     this.getDetail()
+    // 渲染评论
     this.getComments()
   },
   methods: {
@@ -149,13 +175,17 @@ export default {
       this.current = index
     },
     async getDetail () {
-      const { data: { detail } } = await getProDetail(this.goodsId)
+      const {
+        data: { detail }
+      } = await getProDetail(this.goodsId)
       this.detail = detail
       this.images = detail.goods_images
       console.log(detail)
     },
     async getComments () {
-      const { data: { list, total } } = await getProComments(this.goodsId, 2)
+      const {
+        data: { list, total }
+      } = await getProComments(this.goodsId, 2)
       this.commentList = list
       this.total = total
     },
@@ -166,6 +196,44 @@ export default {
     buyFn () {
       this.mode = 'buyNow'
       this.showPannel = true
+    },
+    // 加入购物车
+    async addCart () {
+      // 判断token是否存在
+      // 1.token不存在 弹对话框
+      if (!this.$store.getters.token) {
+        // 弹对话框
+        this.$dialog
+          .confirm({
+            title: '温馨提示',
+            message: '此操作需要先登录',
+            confirmButtonText: '去登录',
+            cancelButtonText: '再逛逛'
+          })
+          .then(() => {
+            // 如果希望跳转到登录=>登录后回弹回来,跳转去携带参数(当前路径参数)
+            // this.$route.fullPath(会包含查询参数)
+            // push累加历史界面 replace不会
+            this.$router.replace({
+              path: '/login',
+              query: {
+                backUrl: this.$route.fullPath
+              }
+            })
+          })
+          .catch(() => {})
+        return
+      }
+      // 2.token存在 继续请求
+      const { data } = await addCart(
+        this.goodsId,
+        this.addCount,
+        this.detail.skuList[0].goods_sku_id
+      )
+      // console.log(this.detail)
+      this.cartTotal = data.cartTotal
+      this.$toast('加入购物车成功')
+      this.showPannel = false
     }
   }
 }
@@ -195,7 +263,7 @@ export default {
     overflow: scroll;
     ::v-deep img {
       display: block;
-      width: 100%!important;
+      width: 100% !important;
     }
   }
   .info {
@@ -287,7 +355,8 @@ export default {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    .icon-home, .icon-cart {
+    .icon-home,
+    .icon-cart {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -350,7 +419,8 @@ export default {
     align-items: center;
   }
 
-  .btn, .btn-none {
+  .btn,
+  .btn-none {
     height: 40px;
     line-height: 40px;
     margin: 20px;
@@ -364,6 +434,22 @@ export default {
   }
   .btn-none {
     background-color: #cccccc;
+  }
+}
+.footer .icon-cart {
+  position: relative;
+  padding: 0 6px;
+  .num {
+    z-index: 999;
+    position: absolute;
+    top: -2px;
+    right: 0;
+    min-width: 16px;
+    padding: 0 4px;
+    color: #fff;
+    text-align: center;
+    background-color: #ee0a24;
+    border-radius: 50%;
   }
 }
 </style>

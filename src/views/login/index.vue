@@ -104,7 +104,11 @@ export default {
       const res = await codeLogin(this.mobile, this.smsCode)
       this.$store.commit('user/setUserInfo', res.data)
       this.$toast('恭喜登录成功')
-      this.$router.push('/')
+      // 判断 看地址栏有无回跳地址
+      // 如果有=>拦截到登录来的 需要回跳
+      // 如果没有 =>正常去首页
+      const url = this.$route.query.backUrl || '/'
+      this.$router.replace(url)
     }
   },
   // 离开页面清除定时器
